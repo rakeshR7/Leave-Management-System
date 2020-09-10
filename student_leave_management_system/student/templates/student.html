@@ -1,0 +1,128 @@
+{% extends 'base.html' %} {% block content %}
+<script>
+	jQuery(function () {
+		jQuery("#student_dob").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'd MM,yy'
+		});
+		jQuery("#student_doj").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'd MM,yy'
+		});
+	});
+</script>
+<!--breadcrumbs start-->
+<div class="breadcrumbs">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-sm-4">
+				<h1>Student Registration</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<!--breadcrumbs end-->
+
+<!--container start-->
+<div class="registration-bg">
+	<div class="row">
+		<form enctype="multipart/form-data" method="post" class="form-signin wow fadeInUp" action="" style="max-width:60%">
+			{% csrf_token %}
+			<h2 class="form-signin-heading">
+				{% if fn == "add" %}
+					Student Registration
+				{% else %}
+					My Profile
+				{% endif %}
+			</h2>
+			{% if messages %}
+				<div class="alert alert-success fade in" style="margin:10px;">
+					{% for message in messages %}
+						<strong>{{ message }}</strong>
+					{% endfor %}
+				</div>
+			{% endif %}
+			<div class="login-wrap">
+				<div class="clearfix"></div> 
+				<div style="font-size:18px; color: #000000; margin:20px 10px 30px 10px; border-bottom:1px solid #CCC">Student Details</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Student Registration ID</label>
+					<input type="text" class="form-control" placeholder="Student Registration ID" autofocus="" name="student_reg_id" id="student_reg_id" value="{{studentdetails.student_reg_id}}">
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">CGPA</label>
+					<input type="text" class="form-control" placeholder="Student CGPA" autofocus="" name="student_cgpa" id="student_cgpa" value="{{studentdetails.student_cgpa}}">
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Student First Name</label>
+					<input type="text" class="form-control" placeholder="Student First Name" autofocus="" name="student_first_name" id="student_first_name" value="{{studentdetails.student_first_name}}">
+				</div>
+				
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Student Last Name</label>
+					<input type="text" class="form-control" placeholder="Student Last Name" autofocus="" name="student_last_name" id="student_last_name" value="{{studentdetails.student_last_name}}">
+				</div>
+				
+				<div class="col-xs-6 form-group update-student">
+					<label for="pwd">Password</label>
+					<input type="password" class="form-control" placeholder="Password" autofocus="" name="student_password" id="student_password" value="{{studentdetails.student_password}}">
+				</div>
+				<div class="col-xs-6 form-group update-student">
+					<label for="pwd">Confirm Password</label>
+					<input type="password" class="form-control" placeholder="Confirm Password" autofocus="" name="student_confirm_password" id="student_confirm_password" value="{{studentdetails.student_password}}">
+				</div>
+				<div style="clear:both"></div>
+				
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Semester</label>
+					<select name="student_semester" required class="form-control" placeholder="Select Semester" autofocus="" /> 
+					<option value="">Please Select</option>
+					{% for semester in semesterlist %}
+					<option value="{{ semester.semester_id }}" {% ifequal semester.semester_id studentdetails.student_semester %} selected="selected"{% endifequal %}>{{semester.semester_title}}</option>
+					{% endfor %}
+					</select>
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Department</label>
+					<select name="student_department" required class="form-control" placeholder="Select Student" autofocus="" /> 
+					<option value="">Please Select</option>
+					{% for department in departmentlist %}
+					<option value="{{ department.department_id }}" {% ifequal department.department_id studentdetails.student_department %} selected="selected"{% endifequal %}>{{department.department_title}}</option>
+					{% endfor %}
+					</select>
+				</div>
+				
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Section</label>
+					<select name="student_section" required class="form-control" placeholder="Select Month" autofocus="" /> 
+					<option value="">Please Select</option>
+					{% for section in sectionlist %}
+					<option value="{{ section.section_id }}" {% ifequal section.section_id studentdetails.student_section %} selected="selected"{% endifequal %}>{{section.section_title}}</option>
+					{% endfor %}
+					</select>
+				</div>
+				
+				<button class="btn btn-lg btn-login btn-block" type="submit">Submit</button>
+			</div>
+			<input type="hidden" name="act" value="save_student">
+			<input type="hidden" name="avail_image" value="{{studentdetails.student_image}}">
+			<input type="hidden" name="student_id" value="{{studentdetails.student_id}}">
+		</form>
+	</div>
+</div>
+{% if studentdetails %}
+<script>
+	$(".update-student").hide();
+</script>
+{% endif %}
+{% if request.session.student_level_id != 1 %}
+<script>
+	$(".role-options").hide();
+</script>
+{% endif %}
+<!--container end-->
+{% endblock content %}

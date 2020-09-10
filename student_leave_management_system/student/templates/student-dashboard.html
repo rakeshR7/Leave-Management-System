@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    .btn.btn-circle {
+        line-height: 30px;
+        padding: 0;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+        background-color: #3a5164;
+        color: #ffffff;
+        width: 150px;
+        height: 150px;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .btn-circle div{
+      margin-top: 40px;
+    }
+    .mydash {
+        border:1px solid #57889c;
+        padding:10px;
+        margin:10px;
+    }
+    .col-lg-2 {
+        width:14.667%;
+    }
+    </style>      
+        <!--breadcrumbs start-->
+<div class="breadcrumbs">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-sm-4">
+				<h1>Student Dashboard</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="registration-bg">
+	<div class="container">
+        <div class="container w">
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 mydash">
+                    <a href="/leave/add" class="btn btn-default btn-circle"><div>Apply<br>OD</div></a>	
+                </div><!--/.col-->
+                <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 mydash">
+                    <a href="/leave" class="btn btn-default btn-circle"><div>My<br>ODs</div></a>	
+                </div><!--/.col-->
+                <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 mydash">
+                    <a href="/student/logout" class="btn btn-default btn-circle" style="padding-top:13px;"><div>Logout</div></a>	
+                </div><!--/.col-->				
+            </div><!-- row -->
+            <br>
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+        

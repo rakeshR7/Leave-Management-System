@@ -1,0 +1,119 @@
+{% extends 'base.html' %} {% block content %}
+<script>
+	jQuery(function () {
+		jQuery("#leave_from_date").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'mm/dd/yy'
+		});
+		jQuery("#leave_to_date").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'mm/dd/yy'
+		});
+	});
+	function chechDateDifferece() {
+		var date1 = new Date(jQuery("#leave_from_date").val());
+		var date2 = new Date(jQuery("#leave_to_date").val());
+		var remainingLeaves = jQuery("#remainingLeaves").val();
+		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+		if(diffDays < 0) {
+			alert("From date must be greater than to date.")
+			jQuery("#leave_from_date").val("");
+			jQuery("#leave_to_date").val("");
+		}
+		
+		if(diffDays > (remainingLeaves - 1 )) {
+			alert("You can not apply more than "+remainingLeaves+" leaves at a time")
+			jQuery("#leave_from_date").val("");
+			jQuery("#leave_to_date").val("");
+		}
+		jQuery("#leave_days").val(diffDays);
+		
+	}
+</script>
+<!--breadcrumbs start-->
+<div class="breadcrumbs">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-sm-4">
+				<h1>{{heading}}</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<!--breadcrumbs end-->
+
+<!--container start-->
+<div class="registration-bg">
+	<div class="row">
+		<form enctype="multipart/form-data" method="post" class="form-signin wow fadeInUp" action="" style="max-width:60%">
+			{% csrf_token %}
+			<h2 class="form-signin-heading">
+				{% if fn == "add" %}
+					Apply For OD
+				{% elif fn == "update" %}
+					Update OD
+				{% endif %}
+			</h2>
+			{% if messages %}
+				<div class="alert alert-success fade in" style="margin:10px;">
+					{% for message in messages %}
+						<strong>{{ message }}</strong>
+					{% endfor %}
+				</div>
+			{% endif %}
+			<div class="login-wrap">
+				<div class="alert alert-success fade in" style="margin:10px;">
+					You can apply maximum {{totalLeaves}} leaves.
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Leave Type</label>
+					<select name="leave_type_id" required class="form-control" placeholder="Select type" autofocus="" /> 
+					<option value="">Please Select</option>
+					{% for type in typelist %}
+					<option value="{{ type.type_id }}" {% ifequal type.type_id studentdetails.leave_type_id %} selected="selected"{% endifequal %}>{{type.type_title}}</option>
+					{% endfor %}
+					</select>
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">Reason for Leave</label>
+					<input type="text" value="{{leaveDetails.leave_reason}}" name="leave_reason" id="leave_reason" class="form-control" placeholder="Reason for Leave" required>
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">From Date</label>
+					<input type="text" value="{{leaveDetails.leave_from_date}}" name="leave_from_date" id="leave_from_date" class="form-control" placeholder="From Date" required>
+				</div>
+				<div class="col-xs-6 form-group">
+					<label for="pwd">To Date</label>
+					<input type="text" value="{{leaveDetails.leave_to_date}}" name="leave_to_date" id="leave_to_date" class="form-control" placeholder="To Date" required onchange="chechDateDifferece()">
+				</div>
+				<div class="col-xs-6 form-group" style="clear:both">
+					<label for="pwd">Desciption of the Leave</label>
+					<textarea class="form-control" style="height:150px;" placeholder="Desciption of the Leav" autofocus="" name="leave_description" id="leave_description" required>{{leaveDetails.leave_description}}</textarea>
+				</div>
+				<button class="btn btn-lg btn-login btn-block" type="submit">Submit</button>
+			</div>
+			<input type="hidden" name="act" value="save_leave">
+			
+			<input type="hidden" name="remainingLeaves" id="remainingLeaves" value="{{totalLeaves}}">
+			<input type="hidden" name="leave_days" id="leave_days" value="0">
+			<input type="hidden" name="user_id" value="{{leavelist.leave_id}}">
+		</form>
+	</div>
+</div>
+{% if appointmentdetails %}
+<script>
+	$(".update-appointment").hide();
+</script>
+{% endif %}
+{% if request.session.appointment_level_id != 1 %}
+<script>
+	$(".role-options").hide();
+</script>
+{% endif %}
+<!--container end-->
+{% endblock content %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %} {% block content %}
+<script>
+	jQuery(function () {
+		jQuery("#leave_from_date").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'mm/dd/yy'
+		});
+		jQuery("#leave_to_date").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: "0:+1",
+			dateFormat: 'mm/dd/yy'
+		});
+	});
+	function chechDateDifferece() {
+		var date1 = new Date(jQuery("#leave_from_date").val());
+		var date2 = new Date(jQuery("#leave_to_date").val());
+		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+		if(diffDays < 0) {
+			alert("From date must be greater than to date.")
+			jQuery("#leave_from_date").val("");
+			jQuery("#leave_to_date").val("");
+		}
+
+		if(diffDays > 4) {
+			alert("You can not apply more than 5 leaves at a time")
+			jQuery("#leave_from_date").val("");
+			jQuery("#leave_to_date").val("");
+		}
+		jQuery("#leave_days").val(diffDays);
+		
+	}
+</script>
+<!--breadcrumbs start-->
+<div class="breadcrumbs">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-sm-4">
+				<h1>{{heading}}</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<!--breadcrumbs end-->
+
+<!--container start-->
+<div class="registration-bg">
+	<div class="row">
+		<form enctype="multipart/form-data" method="post" class="form-signin wow fadeInUp" action="" style="max-width:60%">
+			{% csrf_token %}
+			<h2 class="form-signin-heading">
+				OD Details
+			</h2>
+			{% if messages %}
+				<div class="alert alert-success fade in" style="margin:10px;">
+					{% for message in messages %}
+						<strong>{{ message }}</strong>
+					{% endfor %}
+				</div>
+			{% endif %}
+			<div class="login-wrap">
+				<div style="float:right; padding:10px; color:#FFFFFF">
+					<a style="font-weight:bold; color:#FFFFFF" href="/leave/approve/{{leaveDetails.leave_id}}" class="btn btn-success">Approve Leave</a>
+					<a style="font-weight:bold; color:#FFFFFF" href="/leave/disapprove/{{leaveDetails.leave_id}}" class="btn btn-danger">Disapprove Leave</a>
+				</div>
+				<table class="table table-striped table-advance table-hover" style="color:#000000">
+					<tbody>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF; width: 50%">Student Registration No</th>
+							<td>{{leaveDetails.leave_reason}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Student Name</th>
+							<td>{{leaveDetails.student_first_name}} {{leaveDetails.student_last_name}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Student CGPA</th>
+							<td>{{leaveDetails.student_cgpa}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Student Semester</th>
+							<td>{{leaveDetails.semester_title}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Student Section</th>
+							<td>{{leaveDetails.section_title}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Student Department</th>
+							<td>{{leaveDetails.department_title}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Leave Reason</th>
+							<td>{{leaveDetails.leave_reason}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Leave Type</th>
+							<td>{{leaveDetails.leave_reason}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">From Date</th>
+							<td>{{leaveDetails.leave_from_date}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">To Date</th>
+							<td>{{leaveDetails.leave_to_date}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Number of Days</th>
+							<td>{{leaveDetails.leave_days}}</td>
+						</tr>
+						<tr class="bg-primary">
+							<th style="background-color:#152c3f; color:#FFFFFF;">Description</th>
+							<td>{{leaveDetails.leave_description}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<input type="hidden" name="act" value="save_leave">
+			<input type="hidden" name="leave_days" id="leave_days" value="0">
+			<input type="hidden" name="user_id" value="{{leavelist.leave_id}}">
+		</form>
+	</div>
+</div>
+{% if appointmentdetails %}
+<script>
+	$(".update-appointment").hide();
+</script>
+{% endif %}
+{% if request.session.appointment_level_id != 1 %}
+<script>
+	$(".role-options").hide();
+</script>
+{% endif %}
+<!--container end-->
+{% endblock content %}
